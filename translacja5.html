@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="sylvester.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <style>
+        body {background:#eee;}
+    
+        #main {background:#4086C4;position:relative;width:650px; margin:60px auto; border:1px solid #000; box-shadow:0px 0px 2px #000; padding-top:20px; padding-left: 50px;}
+        #main div {width:600px; padding-left:5px; margin-bottom:40px; color:#fff; font: bold 12px Arial; display: none;}
+        input[type='text'] {margin-bottom: 50px;vertical-align: top; display:inline-block; margin-right:10px;height:33px; width:470px;border:1px solid #000; padding:0px 5px 5px 10px; color:#333}
+        textarea { border: 1px solid #000; height: 160px; margin-bottom:30px; width: 585px;padding:10px 5px 5px 10px; color:#333}
+        label {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#fff; font: bold 12px Arial; }
+        button {border:1px solid #000;  background:#004293; color:#fff; height:40px; width:100px; text-shadow: 2px 0px 0px #000, -2px 0px 0px #000, 0px 2px 0px #000, 0px -2px 0px #000;}
+        ul {padding-left:15px; margin:0px;}
+        ul li {}
+        
+        ::-webkit-input-placeholder { color:#bbb; }
+        ::-moz-placeholder { color:#bbb; } 
+        :-ms-input-placeholder { color:#bbb; } 
+        input:-moz-placeholder { color:#bbb; }
+
+        input, textarea, button {font: 20px/33px Open Sans;box-shadow: 0 0 1px #000;}
+        input, textarea {background: #eee;background: -moz-linear-gradient(top,  #eee 0%, #ffffff 39%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(39%,#ffffff));background: -webkit-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -o-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -ms-linear-gradient(top,  #eee 0%,#ffffff 39%);background: linear-gradient(to bottom,  #eee 0%,#ffffff 39%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='#ffffff',GradientType=0 );}
+    </style>
+</head>
+<body>
+    <div id="main">
+        <form>
+            <input type="text" id="first" placeholder="np. [ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]" />
+            <label  for="first">pomoc</label>
+            
+            <button>Oblicz</button>
+            <div>
+                <span>Przykłady</span>
+                <ul>
+                    <li>[ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]</li>
+                    <li>[ [2, 1], [3, 4] ]mnoz[ [5, 8, 2], [7, 6, 5] ]</li>
+                    <li>[ [2, 1], [3, 4] ]trans</li>
+                    <li>[ [9, -10, 1], [-9, 0, -8], [5, -3, -6] ]wyzn</li>
+                    <li>macierz(2,2)</li>
+                </ul>
+            </div>
+            <textarea></textarea>
+        </form>
+    </div>
+        
+<script type="text/javascript">
+$( document ).ready(function() {
+    var text = $('textarea'),
+        select = $('button'),
+        label = $('label'),
+        input = $('input'),
+        li = $('li');
+
+    text.val('');
+    
+    label.click(function() {
+        var div = $('#main div');
+        
+        div.slideToggle();
+        
+    });
+    
+    li.click(function() {
+    console.log($(this).text())
+        input.val($(this).text());
+    });
+    
+    select.click(function(e){
+    
+        try {
+        
+            var value = $('input').val();
+            
+            if (value.indexOf('dodaj') !== -1) {
+
+                var 
+                    t = value.split('dodaj'),
+                    A = $M(JSON.parse(t[0])),
+                    B = $M(JSON.parse(t[1])),
+                    a = A.add(B);
+                    
+                if( a == null) {text.val('błąd'); return false;}
+
+                //[ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]
+                text.val(a.inspect())
+            }
+            
+            if (value.indexOf('mnoz') !== -1) {
+
+                var 
+                    t = value.split('mnoz'),
+                    A = $M(JSON.parse(t[0])),
+                    B = $M(JSON.parse(t[1])),
+                    a = A.multiply(B);
+                
+                if( a == null) {text.val('błąd'); return false;}
+                //[ [2, 1], [3, 4] ]mnoz[ [5,8,2],[7,6,5] ]
+                text.val(a.inspect())
+            }
+            
+            if (value.indexOf('trans') !== -1) {
+
+                var 
+                    t = value.split('trans'),
+                    A = $M(JSON.parse(t[0])),
+                    a = A.transpose();
+                    
+                if( a == null) {text.val('błąd'); return false;}
+                //[ [2, 1], [3, 4] ]trans
+                text.val(a.inspect())
+            }
+                        
+            if (value.indexOf('wyzn') !== -1) {
+
+                var 
+                    t = value.split('wyzn'),
+                    A = $M(JSON.parse(t[0])),
+                    a = A.determinant();
+                    
+                if( a == null) {text.val('błąd'); return false;}
+                //[[9,-10,1],[-9,0,-8],[5,-3,-6]] wyzn
+                text.val(a.toSource().slice(12,a.toSource().length-2))
+            }
+            
+            if (value.indexOf('macierz') !== -1) {
+
+                var 
+                    t = value.split('macierz'),
+                    a = t[1].slice(1,2),
+                    b = t[1].slice(3,4),
+                    A = Matrix.Random(a,b);
+                    
+                if( A == null) {text.val('błąd'); return false;}
+                //macierz(wiersze,kolumny)
+                text.val(A.inspect());
+            }
+            
+            e.preventDefault();
+            return false;
+        } catch(err) {
+            console.log(err);
+            text.val('błąd składni'); 
+            return false;
+        }
+
+    });
+    
+});
+</script>
+</body>
+</html>
