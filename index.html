@@ -13,7 +13,7 @@
         #main div {width:600px; padding-left:5px; margin-bottom:40px; color:#fff; font: bold 12px Arial; display: none;}
         input[type='text'] {margin-bottom: 50px;vertical-align: top; display:inline-block; margin-right:10px;height:33px; width:470px;border:1px solid #000; padding:0px 5px 5px 10px; color:#333}
         textarea { border: 1px solid #000; height: 160px; margin-bottom:30px; width: 585px;padding:10px 5px 5px 10px; color:#333}
-        label {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#fff; font: bold 12px Arial; }
+        .help {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#fff; font: bold 12px Arial; }
         button {border:1px solid #000;  background:#004293; color:#fff; height:40px; width:100px; text-shadow: 2px 0px 0px #000, -2px 0px 0px #000, 0px 2px 0px #000, 0px -2px 0px #000;}
         ul {padding-left:15px; margin:0px;}
         ul li {}
@@ -34,23 +34,32 @@
             input[type='text'] {width:370px; margin-right:0px; margin-bottom:10px }
             textarea {width:370px;}
             button {margin-bottom:10px; display:block;}
-            label {left:auto; right:15px;}
+            .help {left:auto; right:15px;}
         }
         @media screen and (max-width:479px) {
-            #main {width:230px; padding-left:15px; margin:20px auto 0px auto;}
+            #main {width:300px; padding-left:15px; margin:10px auto 0px auto;}
+            #main div {width:270px}
+            input[type='text'] {width:270px; margin-right:0px; margin-bottom:10px }
+            textarea {width:270px;}
+            button {margin-bottom:10px;}
+            .help {left:auto; right:15px;}
+        }
+        @media screen and (max-width:320px) {
+            #main {width:230px; padding-left:15px; margin:10px auto 0px auto;}
             #main div {width:200px}
             input[type='text'] {width:200px; margin-right:0px; margin-bottom:10px }
             textarea {width:200px;}
             button {margin-bottom:10px;}
-            label {left:auto; right:15px;}
+            .help {left:auto; right:15px;}
         }
+        
     </style>
 </head>
 <body>
     <div id="main">
         <form>
             <input type="text" id="first" placeholder="np. [ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]" />
-            <label  for="first">pomoc</label>
+            <span class="help">pomoc</span>
             
             <button>Oblicz</button>
             <div>
@@ -71,13 +80,14 @@
 $( document ).ready(function() {
     var text = $('textarea'),
         select = $('button'),
-        label = $('label'),
+        label = $('.help'),
         input = $('input'),
         li = $('li');
 
     text.val('');
     
     label.click(function() {
+    
         var div = $('#main div');
         
         div.slideToggle();
@@ -85,7 +95,6 @@ $( document ).ready(function() {
     });
     
     li.click(function() {
-    console.log($(this).text())
         input.val($(this).text());
     });
     
