@@ -85,7 +85,11 @@
     </div>
         
 <script type="text/javascript">
-$( document ).ready(function() {
+
+document.addEventListener("deviceready",onDeviceReady,false);
+
+
+function onDeviceReady() {
     var text = $('textarea'),
         select = $('button'),
         label = $('.help'),
