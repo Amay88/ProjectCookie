@@ -7,23 +7,23 @@
     <script type="text/javascript" src="sylvester.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style>
-        body {background:url("wavegrid.png"); margin:0px;}
+        body {background:#FCFCFC; margin:0px;}
     
-        #main {background:#4086C4;position:relative;width:650px; margin:60px auto; border:1px solid #000; box-shadow:0px 0px 2px #000; padding-top:20px; padding-left: 50px;}
-        #main div {width:600px; padding-left:5px; margin-bottom:40px; color:#fff; font: bold 12px Arial; display: none;}
+        #main {border-radius:5px; background:url("wavegrid.png");position:relative;width:650px; margin:60px auto; border:1px solid #000; padding-top:20px; padding-left: 50px;}
+        #main div {width:600px; padding-left:5px; margin-bottom:40px; color:#333; font: bold 12px Arial; display: none;}
         input[type='text'] {margin-bottom: 50px;vertical-align: top; display:inline-block; margin-right:10px;height:33px; width:470px;border:1px solid #000; padding:0px 5px 5px 10px; color:#333}
         textarea { border: 1px solid #000; height: 160px; margin-bottom:30px; width: 585px;padding:10px 5px 5px 10px; color:#333}
-        .help {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#fff; font: bold 12px Arial; }
-        button {border:1px solid #000;  background:#004293; color:#fff; height:40px; width:100px; text-shadow: 2px 0px 0px #000, -2px 0px 0px #000, 0px 2px 0px #000, 0px -2px 0px #000;}
+        .help {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#333; font: bold 12px Arial; }
+        button {border:1px solid #000;  background:#617798; color:#fff; height:40px; width:100px; text-shadow: 2px 0px 0px #000, -2px 0px 0px #000, 0px 2px 0px #000, 0px -2px 0px #000;}
         ul {padding-left:15px; margin:0px;}
-        ul li {}
+        ul li {color:#333;}
         
         ::-webkit-input-placeholder { color:#bbb; }
         ::-moz-placeholder { color:#bbb; } 
         :-ms-input-placeholder { color:#bbb; } 
         input:-moz-placeholder { color:#bbb; }
 
-        input, textarea, button {font: 20px/33px Open Sans;box-shadow: 0 0 1px #000;}
+        input, textarea, button {font: 20px/33px Open Sans; border-radius:5px;}
         input, textarea {background: #eee;background: -moz-linear-gradient(top,  #eee 0%, #ffffff 39%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(39%,#ffffff));background: -webkit-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -o-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -ms-linear-gradient(top,  #eee 0%,#ffffff 39%);background: linear-gradient(to bottom,  #eee 0%,#ffffff 39%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='#ffffff',GradientType=0 );}
         
 
@@ -47,17 +47,17 @@
         @media screen and (max-width:479px) {
             #main {width:300px; padding-left:15px; margin:60px auto 0px auto;}
             #main div {width:270px}
-            input[type='text'] {width:270px; font-size:15px; margin-right:0px; margin-bottom:10px }
+            input[type='text'] {width:270px; font-size:15px; margin-right:0px; margin-bottom:20px }
             textarea {width:270px; font-size:15px; line-height:24px;}
-            button {margin-bottom:10px;}
-            .help {left:auto; right:15px;}
+            button {margin-bottom:20px;}
+            .help {left:auto; right:18px; top:78px;}
         }
         @media screen and (max-width:320px) {
             #main {width:230px; padding-left:15px; margin:40px auto 0px auto;}
             #main div {width:200px}
-            input[type='text'] {width:200px; font-size:15px; margin-right:0px; margin-bottom:10px }
+            input[type='text'] {width:200px; font-size:15px; margin-right:0px; margin-bottom:20px }
             textarea {width:200px;}
-            button {margin-bottom:10px;}
+            button {margin-bottom:20px;}
             .help {left:auto; right:15px;}
         }
         
