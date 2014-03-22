@@ -3,195 +3,216 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="sylvester.js"></script>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style>
-        body {background:#FCFCFC; margin:0px;}
-    
-        #main {border-radius:5px; background:url("wavegrid.png");position:relative;width:650px; margin:60px auto; border:1px solid #000; padding-top:20px; padding-left: 50px;}
-        #main div {width:600px; padding-left:5px; margin-bottom:40px; color:#333; font: bold 12px Arial; display: none;}
-        input[type='text'] {margin-bottom: 50px;vertical-align: top; display:inline-block; margin-right:10px;height:33px; width:470px;border:1px solid #000; padding:0px 5px 5px 10px; color:#333}
-        textarea { border: 1px solid #000; height: 160px; margin-bottom:30px; width: 585px;padding:10px 5px 5px 10px; color:#333}
-        .help {cursor: pointer; left: 55px; letter-spacing: 1px; position: absolute; top: 67px; color:#333; font: bold 12px Arial; }
-        button {border:1px solid #000;  background:#617798; color:#fff; height:40px; width:100px; text-shadow: 2px 0px 0px #000, -2px 0px 0px #000, 0px 2px 0px #000, 0px -2px 0px #000;}
-        ul {padding-left:15px; margin:0px;}
-        ul li {color:#333;}
-        
-        ::-webkit-input-placeholder { color:#bbb; }
-        ::-moz-placeholder { color:#bbb; } 
-        :-ms-input-placeholder { color:#bbb; } 
-        input:-moz-placeholder { color:#bbb; }
-
-        input, textarea, button {font: 20px/33px Open Sans; border-radius:5px;}
-        input, textarea {background: #eee;background: -moz-linear-gradient(top,  #eee 0%, #ffffff 39%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(39%,#ffffff));background: -webkit-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -o-linear-gradient(top,  #eee 0%,#ffffff 39%);background: -ms-linear-gradient(top,  #eee 0%,#ffffff 39%);background: linear-gradient(to bottom,  #eee 0%,#ffffff 39%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='#ffffff',GradientType=0 );}
-        
-
-        
-        @media screen and (max-width:640px) {
-            #main {width:500px; padding-left:15px;margin:15px auto 0px auto;}
-            #main div {width:470px}
-            input[type='text'] {width:470px; margin-right:0px; margin-bottom:10px }
-            textarea {width:470px;}
-            button {margin-bottom:10px; display:block;}
-            .help {left:auto; right:15px;}
-        }
-        @media screen and (max-width:639px) {
-            #main {width:400px; padding-left:15px;margin:15px auto 0px auto;}
-            #main div {width:370px}
-            input[type='text'] {width:370px; margin-right:0px; margin-bottom:10px }
-            textarea {width:370px;}
-            button {margin-bottom:10px; display:block;}
-            .help {left:auto; right:15px;}
-        }
-        @media screen and (max-width:479px) {
-            #main {width:300px; padding-left:15px; margin:60px auto 0px auto;}
-            #main div {width:270px}
-            input[type='text'] {width:270px; font-size:15px; margin-right:0px; margin-bottom:20px }
-            textarea {width:270px; font-size:15px; line-height:24px;}
-            button {margin-bottom:20px;}
-            .help {left:auto; right:19px; top:80px;}
-        }
-        @media screen and (max-width:320px) {
-            #main {width:230px; padding-left:15px; margin:40px auto 0px auto;}
-            #main div {width:200px}
-            input[type='text'] {width:200px; font-size:15px; margin-right:0px; margin-bottom:20px }
-            textarea {width:200px;}
-            button {margin-bottom:20px;}
-            .help {left:auto; right:15px;}
-        }
-        
+        #mycanvas {background: grey;}
+        body,canvas{width:100%; height:100%; margin:0;padding:0;}
+        canvas {position: relative;}
+        canvas:after {content: ""; display: block; width: 500px; height: 500px; border-radius: 100px; background: red; position: absolute; top: 50%; left: 50%;}
     </style>
 </head>
 <body>
-    <div id="main">
-        <form>
-            <input type="text" id="first" placeholder="np. [ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]" />
-            <span class="help">pomoc</span>
-            
-            <button>Oblicz</button>
-            <div>
-                <span>Przykłady</span>
-                <ul>
-                    <li>[ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]</li>
-                    <li>[ [2, 1], [3, 4] ]mnoz[ [5, 8, 2], [7, 6, 5] ]</li>
-                    <li>[ [2, 1], [3, 4] ]trans</li>
-                    <li>[ [9, -10, 1], [-9, 0, -8], [5, -3, -6] ]wyzn</li>
-                    <li>macierz(2,2)</li>
-                </ul>
-            </div>
-            <textarea></textarea>
-        </form>
-    </div>
+<div class="main">
+    <canvas id="mycanvas" width="1280" height="768"></canvas>
+    <div class="circle"></div>
+</div>
+    <script type="text/javascript">
+    var game = {
         
-<script type="text/javascript">
-
-document.addEventListener("deviceready",onDeviceReady,false);
-
-
-function onDeviceReady() {
-    var text = $('textarea'),
-        select = $('button'),
-        label = $('.help'),
-        input = $('input'),
-        li = $('li');
-
-    text.val('');
-    
-    label.click(function() {
-    
-        var div = $('#main div');
+            canvas: document.getElementById('mycanvas'),
         
-        div.slideToggle();
+            ctx: document.getElementById('mycanvas').getContext('2d'), 
         
-    });
-    
-    li.click(function() {
-        input.val($(this).text());
-    });
-    
-    select.click(function(e){
-    
-        try {
+            window: {
+                gameWidth: window.innerWidth,
+                gameHeight: window.innerHeight,    
+            },
         
-            var value = $('input').val();
-            
-            if (value.indexOf('dodaj') !== -1) {
-
-                var 
-                    t = value.split('dodaj'),
-                    A = $M(JSON.parse(t[0])),
-                    B = $M(JSON.parse(t[1])),
-                    a = A.add(B);
+            player: {
+                x: 100,
+                y: 100,
+                w: 20,
+                h: 20,
+                inc: 0,
+                grav: 1.5,
+                velY: 0,
+                jump: false,
+                jumpval: 0
+            },
+        
+            keys: {},
+        
+            init: function() {
+                //game.KeyPress.init();
+                game.TouchStart.init();
+                game.drawAll();
+                                
+            },
+        
+            /*KeyPress: {
+                init: function() {
+                    var 
+                        me = game.KeyPress;
                     
-                if( a == null) {text.val('błąd'); return false;}
+                        window.addEventListener('keydown', function(e) {
+                            game.keys[e.keyCode] = true;
+                        });
 
-                //[ [2, 1], [3, 4] ]dodaj[ [2, 4], [5, 4] ]
-                text.val(a.inspect())
-            }
-            
-            if (value.indexOf('mnoz') !== -1) {
+                        window.addEventListener('keyup', function(e) {
+                            delete game.keys[e.keyCode];
+                        });
+                }
+            },*/
+        
+            TouchStart: {
+                init: function() {
 
-                var 
-                    t = value.split('mnoz'),
-                    A = $M(JSON.parse(t[0])),
-                    B = $M(JSON.parse(t[1])),
-                    a = A.multiply(B);
+                    window.addEventListener('click', function(e) {
+                        game.player.jump = true;
+                        //game.player.velY += 5;
+                    });
                 
-                if( a == null) {text.val('błąd'); return false;}
-                //[ [2, 1], [3, 4] ]mnoz[ [5,8,2],[7,6,5] ]
-                text.val(a.inspect())
-            }
-            
-            if (value.indexOf('trans') !== -1) {
-
-                var 
-                    t = value.split('trans'),
-                    A = $M(JSON.parse(t[0])),
-                    a = A.transpose();
+                }    
+            },
+        
+            Player: {
+                move: function() {
+                    var 
+                        x, y = 0, r = 200 ;
                     
-                if( a == null) {text.val('błąd'); return false;}
-                //[ [2, 1], [3, 4] ]trans
-                text.val(a.inspect())
-            }
-                        
-            if (value.indexOf('wyzn') !== -1) {
-
-                var 
-                    t = value.split('wyzn'),
-                    A = $M(JSON.parse(t[0])),
-                    a = A.determinant();
+                    /*for (key in game.keys) {
+                        switch (key) {
+                            case "38":
+                                game.player.velY += 10;
+                                break;
+                            case "40":
+                                y = 50;
+                                break;
+                            case "39":
+                                x = 10;
+                                break;
+                            case "37":
+                                x = -10;
+                                break;
+                        }
+                    }*/
                     
-                if( a == null) {text.val('błąd'); return false;}
-                //[[9,-10,1],[-9,0,-8],[5,-3,-6]] wyzn
-                text.val(a.toSource().slice(12,a.toSource().length-2))
-            }
-            
-            if (value.indexOf('macierz') !== -1) {
-
-                var 
-                    t = value.split('macierz'),
-                    a = t[1].slice(1,2),
-                    b = t[1].slice(3,4),
-                    A = Matrix.Random(a,b);
+                    if (game.player.jump === true) {
+                        game.player.jumpval += 2;
+                    }
+     
+                    if (game.player.jumpval == 20) {
+                        game.player.jump = false;
+                        game.player.jumpval = 0;
+                    }
                     
-                if( A == null) {text.val('błąd'); return false;}
-                //macierz(wiersze,kolumny)
-                text.val(A.inspect());
+                    game.player.inc += 0.02;
+                    game.player.velY = game.player.velY - game.player.grav + game.player.jumpval; 
+                    r += game.player.velY;
+
+                    game.player.x = Math.max(0, Math.min(1280, r * (Math.cos(game.player.inc)) + 640 - 20));
+                    game.player.y = Math.max(0, Math.min(768, r * (Math.sin(game.player.inc)) + 384 - 20));
+
+                }
+                
+            },
+        
+            /*Enemy: {
+                move: function() {
+                
+                    if (game.player.x - game.enemy.x < 0) {
+                        game.enemy.countx = - 1;   
+                    }
+                    
+                    if (game.player.x - game.enemy.x > 50) {
+                        game.enemy.countx = + 1;   
+                    }
+                    
+                    if (game.player.x - game.enemy.x == 0) {
+                        game.enemy.countx = 0;   
+                    }              
+                    
+                    if (game.player.y - game.enemy.y < 0) {
+                        game.enemy.county = - 1;   
+                    }
+                    
+                    if (game.player.y - game.enemy.y > 50) {
+                        game.enemy.county = + 1;   
+                    }
+                    
+                    if (game.player.y - game.enemy.y == 0) {
+                        game.enemy.county = 0;   
+                    }     
+                    game.enemy.x = game.enemy.x + game.enemy.countx;
+                    game.enemy.y = game.enemy.y + game.enemy.county
+                }
+            },*/
+        
+            drawAll: function() {
+                game.ctx.clearRect(0,0,1280,768);
+                game.ctx.fillRect(game.player.x, game.player.y, game.player.w, game.player.h);
+                
+                game.ctx.beginPath();
+                game.ctx.arc(640,384,100,0,2*Math.PI);
+                game.ctx.fill();
+                //game.ctx.fillRect(game.enemy.x, game.enemy.y, game.enemy.w, game.enemy.h);
+                window.requestAnimationFrame(game.drawAll);
+                game.Player.move();
+                //game.Enemy.move();
             }
-            
-            e.preventDefault();
-            return false;
-        } catch(err) {
-            console.log(err);
-            text.val('błąd składni'); 
-            return false;
         }
-
-    });
+        
+    game.init();
+        
+    (function() {
+        var lastTime = 0;
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame =
+              window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+        }
     
-}
-</script>
+        if (!window.requestAnimationFrame)
+            window.requestAnimationFrame = function(callback, element) {
+                var currTime = new Date().getTime();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+                  timeToCall);
+                lastTime = currTime + timeToCall;
+                return id;
+            };
+    
+        if (!window.cancelAnimationFrame)
+            window.cancelAnimationFrame = function(id) {
+                clearTimeout(id);
+            };
+    }());      
+        
+        
+    /* scalable canvas */
+    function OnResizeCalled() {
+        var 
+            gameWidth = window.innerWidth,
+            gameHeight = window.innerHeight,
+            scaleToFitX = gameWidth / 1280,
+            scaleToFitY = gameHeight / 768,
+            canvas = document.getElementById('mycanvas'),
+
+            currentScreenRatio = gameWidth / gameHeight,
+            optimalRatio = Math.min(scaleToFitX, scaleToFitY);
+
+        if (currentScreenRatio >= 1.77 && currentScreenRatio <= 1.79) {
+            canvas.style.width = gameWidth + "px";
+            canvas.style.height = gameHeight + "px";  
+        } else {
+            canvas.style.width = 1280 * optimalRatio + "px";
+            canvas.style.height = 768 * optimalRatio + "px";
+        }
+    }
+        
+    window.addEventListener('resize', OnResizeCalled, false);
+    OnResizeCalled();
+        
+    </script>
 </body>
 </html>
